@@ -40,3 +40,12 @@
       name: mariadb-server
       state: latest
     when: ansible_distribution == "Ubuntu"
+
+  - name: Copy html file for site creation
+    tags: website,apache,http
+    copy: 
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644

@@ -7,16 +7,26 @@
   - name: install updates (CentOS)
     tags: always
     dnf:
-      update_only: yes
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "CentOS"
 
   - name: install updates (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for new user
+    tags: always
+    authorized_key:
+      user: new_user
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQVYAsFSKNHlx8b/ie4+QIEX5sIoMFirMV6HjpEz9EM ansible"
 
 - hosts: db_servers
   become: true
@@ -33,6 +43,14 @@
 - hosts: db_servers
   become: true
   tasks:
+
+
+  - name: turn on apache
+    tags: apache,http,on
+    service:
+      name: apache2
+      state: started
+    when: ansible_distribution == "Ubuntu"
 
   - name: install mariadb package for Ubuntu  [db_servers]
     tags: mariadb
@@ -62,3 +80,18 @@
       mode: 0755
       owner: root
       group: root
+  - name: install apache and php for CentOS server
+    tags: apacha,centos,httpd
+    dnf:
+      name:   
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: start httpd (CentOS)
+    tags: apache,centos,httpd
+    service:
+      name: httpd
+      state: started
+    when: ansible_distribution == "CentOS"

@@ -34,10 +34,11 @@
   become: true
   tasks:
 
-  - name: install mariadb package for Ubuntu
+  - name: install mariadb package for Ubuntu  [db_servers]
     tags: mariadb
     apt:
-      name: mariadb-server
+      name:
+        - mariadb-server
       state: latest
     when: ansible_distribution == "Ubuntu"
 
@@ -49,3 +50,15 @@
       owner: root
       group: root
       mode: 0644
+  - name: install unzip
+    package:
+      name: unzip
+
+  - name: install terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_386.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root

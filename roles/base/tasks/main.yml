@@ -1,0 +1,7 @@
+- name: add ssh key for major (test)
+  authorized_key:
+    user: major
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQVYAsFSKNHlx8b/ie4+QIEX5sIoMFirMV6HjpEz9EM ansible"
+
+
+
